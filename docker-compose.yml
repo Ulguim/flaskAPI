@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+      target: development
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres_user:password@db/postgres_db
+    # command: ls -l
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres_db
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: password
+
+volumes:
+  postgres_data:
