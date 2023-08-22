@@ -1,6 +1,8 @@
 version: '3.8'
 services:
   web:
+    restart: always
+    container_name: flask_api
     build:
       context: .
       target: development
@@ -13,15 +15,28 @@ services:
       - db
     environment:
       DATABASE_URL: postgres://postgres_user:password@db/postgres_db
+    networks:
+      - flask_network
     # command: ls -l
   db:
+    container_name: flask_db
     image: postgres:13
+    # ports:
+    #   - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    expose:
+     - 5435
     environment:
-      POSTGRES_DB: postgres_db
-      POSTGRES_USER: postgres_user
-      POSTGRES_PASSWORD: password
-
+      POSTGRES_DB: flask
+      POSTGRES_USER: flask
+      POSTGRES_PASSWORD: flask
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 127.0.0.1:5435:5432
+    networks:
+      - flask_network
+networks:
+  flask_network:
 volumes:
   postgres_data:
