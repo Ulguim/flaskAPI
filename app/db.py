@@ -10,7 +10,6 @@ conn = psycopg2.connect(
     user=os.environ.get('POSTGRES_USER'),
     password=os.environ.get('POSTGRES_PASSWORD'),
     port=5432
-
     )
 
 cur = conn.cursor()
