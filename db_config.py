@@ -3,7 +3,7 @@ load_dotenv()
 import os
 import psycopg2
 from psycopg2.extensions import parse_dsn
-
+from flask_sqlalchemy import SQLAlchemy
 conn = psycopg2.connect(
     host=os.environ.get('POSTGRES_HOST'),
     database=os.environ.get('POSTGRES_DB'),
@@ -13,4 +13,5 @@ conn = psycopg2.connect(
     )
 
 cur = conn.cursor()
-# 
+database = SQLAlchemy()
+

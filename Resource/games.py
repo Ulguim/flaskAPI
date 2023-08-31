@@ -107,4 +107,3 @@ def popular_games_by_plataform():
 
     }
     return jsonify(body)
-    # return response.json()

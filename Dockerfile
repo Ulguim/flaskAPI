@@ -8,5 +8,5 @@ COPY dependencies.txt ./dependencies.txt
 COPY . .
 
 RUN pip install -r dependencies.txt
+CMD ["python", "app.py"]
 
-CMD ["python", "app/app.py"]
