@@ -1,12 +1,14 @@
 from flask import Flask
-import os
 from flask import session
 from flask_migrate import Migrate
+from flask_session import Session
+from flask_jwt_extended import JWTManager
+
 from Auth.twAuth import twit_auth
 # from Auth.Authenticate import auth_blueprint
 from Resource.games import games_blueprint
 from db_config import cur
-from flask_session import Session
+import os
 
 
 def create_app():
@@ -16,6 +18,10 @@ def create_app():
     app.register_blueprint(auth_blueprint)
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://flask:flask@{os.environ.get("POSTGRES_HOST")}:5432/{os.environ.get("POSTGRES_DB")}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY')  # Change this!
+    jwt = JWTManager(app)
+
     from Models.models import database as db
     db.init_app(app)
     migrate = Migrate(app, db)

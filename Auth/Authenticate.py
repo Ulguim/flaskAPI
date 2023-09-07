@@ -4,18 +4,21 @@ from flask import Blueprint
 from flask import jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from  Models.models import UserLogin
-
-database = SQLAlchemy()
+from  db_config import database
+# Authentication with JWT
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
 auth_blueprint = Blueprint('auth', __name__)
-
 # @auth is a decorator that tells Flask what URL to trigger the function
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     try:
         username = request.json['username']
         password = request.json['password']
-        userData = "UserLogin.query.filter_by(username=username).first()"
+        userData = UserLogin.query.filter_by(username=username).first()
         if userData is None:
             return jsonify({'error': 'User not found'})
 
@@ -31,12 +34,16 @@ def register_user():
         # role = request.json['role']
         userData = UserLogin.query.filter_by(username=username).first()
         if userData is not None:
-            return jsonify(userData)
+            return jsonify({'error': 'User already exists'})
 
-        user = UserLogin(username, password, role)
+        user = UserLogin(username, password)
         database.session.add(user)
         database.session.commit()
-        return jsonify(user)
+        body = {
+            "username": username,
+            "password": password
+        }
+        return(body)
 
     except Exception as e:
         return jsonify({'error': str(e)})
